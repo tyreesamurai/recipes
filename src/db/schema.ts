@@ -1,8 +1,8 @@
 import {
   integer,
   jsonb,
-  numeric,
   pgTable,
+  real,
   text,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -40,6 +40,6 @@ export const ingredientsTable = pgTable("ingredients", {
 export const recipeIngredientsTable = pgTable("recipe_ingredients", {
   recipeId: integer("recipe_id").references(() => recipesTable.id),
   ingredientId: integer("ingredient_id").references(() => ingredientsTable.id),
-  quantity: numeric({ precision: 100, scale: 2 }),
+  quantity: real(),
   unit: varchar({ length: 255 }),
 });
