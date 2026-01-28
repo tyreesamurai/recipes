@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/db/index";
-import { logger } from "@/lib/logger";
 import * as schema from "@/db/schema";
+import { logger } from "@/lib/logger";
 import type { Ingredient, Recipe, RecipeIngredient } from "@/lib/types";
 
 const fetchAllRecipes = async () => {
-  const rows = await db.select().from(schema.recipesTable);
+  const rows = await db.select().from(schema.recipes);
 
   logger.info("fetched all recipes");
 
@@ -15,8 +15,8 @@ const fetchAllRecipes = async () => {
 const fetchRecipeByID = async (id: number) => {
   const [row] = await db
     .select()
-    .from(schema.recipesTable)
-    .where(eq(schema.recipesTable.id, id))
+    .from(schema.recipes)
+    .where(eq(schema.recipes.id, id))
     .limit(1);
 
   logger.info("fetched recipe: %s", JSON.stringify(row));
@@ -27,8 +27,8 @@ const fetchRecipeByID = async (id: number) => {
 const fetchRecipeByName = async (name: string) => {
   const [row] = await db
     .select()
-    .from(schema.recipesTable)
-    .where(eq(schema.recipesTable.name, name))
+    .from(schema.recipes)
+    .where(eq(schema.recipes.name, name))
     .limit(1);
 
   logger.info("fetched recipe: %s", JSON.stringify(row));
@@ -41,9 +41,9 @@ const upsertRecipe = async (recipe: Recipe) => {
 
   if (foundRecipe) {
     const [row] = await db
-      .update(schema.recipesTable)
+      .update(schema.recipes)
       .set(recipe)
-      .where(eq(schema.recipesTable.name, recipe.name))
+      .where(eq(schema.recipes.name, recipe.name))
       .returning();
 
     logger.info("found existing recipe: %s", JSON.stringify(row));
@@ -51,7 +51,7 @@ const upsertRecipe = async (recipe: Recipe) => {
   }
 
   const [insertedRecipe] = await db
-    .insert(schema.recipesTable)
+    .insert(schema.recipes)
     .values(recipe)
     .returning();
 
@@ -60,7 +60,7 @@ const upsertRecipe = async (recipe: Recipe) => {
 };
 
 const fetchAllIngredients = async () => {
-  const rows = await db.select().from(schema.ingredientsTable);
+  const rows = await db.select().from(schema.ingredients);
 
   return rows as Ingredient[];
 };
@@ -68,8 +68,8 @@ const fetchAllIngredients = async () => {
 const fetchIngredientByID = async (id: number) => {
   const [row] = await db
     .select()
-    .from(schema.ingredientsTable)
-    .where(eq(schema.ingredientsTable.id, id))
+    .from(schema.ingredients)
+    .where(eq(schema.ingredients.id, id))
     .limit(1);
 
   return row as Ingredient;
@@ -78,8 +78,8 @@ const fetchIngredientByID = async (id: number) => {
 const fetchIngredientByName = async (name: string) => {
   const [row] = await db
     .select()
-    .from(schema.ingredientsTable)
-    .where(eq(schema.ingredientsTable.name, name))
+    .from(schema.ingredients)
+    .where(eq(schema.ingredients.name, name))
     .limit(1);
 
   return row as Ingredient;
@@ -90,53 +90,57 @@ const upsertIngredient = async (ingredient: Ingredient) => {
 
   if (foundIngredient) {
     const [row] = await db
-      .update(schema.ingredientsTable)
+      .update(schema.ingredients)
       .set(ingredient)
-      .where(eq(schema.ingredientsTable.name, ingredient.name))
+      .where(eq(schema.ingredients.name, ingredient.name))
       .returning();
 
     return row as Ingredient;
   }
 
   const [insertedIngredient] = await db
-    .insert(schema.ingredientsTable)
+    .insert(schema.ingredients)
     .values(ingredient)
     .returning();
 
   return insertedIngredient as Ingredient;
 };
 
-const fullInsert = async (recipe: Recipe, ingredients?: Ingredient[]) => {
+const insertRecipeWithIngredients = async (
+  recipe: Recipe,
+  ingredients?: Ingredient[],
+) => {
   const insertedRecipe = await api.recipes.upsert(recipe);
 
   if (!ingredients) {
+    logger.info(
+      "inserted recipe with no ingredients: %s",
+      JSON.stringify(insertedRecipe),
+    );
     return insertedRecipe;
   }
 
-  const insertedIngredients = await Promise.all(
-    ingredients.map(async (ingredient) => {
-      const savedIngredient = await api.ingredients.upsert(ingredient);
+  ingredients.forEach(async (ingredient) => {
+    const insertedIngredient = await api.ingredients.upsert(ingredient);
 
-      const recipeIngredient = {
-        ...savedIngredient,
-        quantity: ingredient.quantity,
-        unit: ingredient.unit,
-      };
-
-      return recipeIngredient;
-    }),
-  );
-
-  insertedIngredients.forEach(async (ingredient) => {
     const recipeIngredient = {
-      recipeId: insertedRecipe.id,
-      ingredientId: ingredient.id,
+      recipeId: insertedRecipe.id ?? null,
+      ingredientId: insertedIngredient.id ?? null,
       quantity: ingredient.quantity,
       unit: ingredient.unit,
     };
 
-    await db.insert(schema.recipeIngredientsTable).values(recipeIngredient);
+    api.recipeIngredients.insert(recipeIngredient);
   });
+};
+
+const insertRecipeIngredient = async (recipeIngredient: RecipeIngredient) => {
+  const [insertedRecipeIngredient] = await db
+    .insert(schema.recipeIngredients)
+    .values(recipeIngredient)
+    .returning();
+
+  return insertedRecipeIngredient;
 };
 
 export const api = {
@@ -145,6 +149,7 @@ export const api = {
     getByID: fetchRecipeByID,
     getByName: fetchRecipeByName,
     upsert: upsertRecipe,
+    insert: insertRecipeWithIngredients,
   },
   ingredients: {
     getAll: fetchAllIngredients,
@@ -153,6 +158,6 @@ export const api = {
     upsert: upsertIngredient,
   },
   recipeIngredients: {
-    create: (recipeIngredient: RecipeIngredient) => {},
+    insert: insertRecipeIngredient,
   },
 };
