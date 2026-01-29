@@ -106,6 +106,24 @@ const upsertIngredient = async (ingredient: Ingredient) => {
   return insertedIngredient as Ingredient;
 };
 
+const getIngredients = async (recipeId: number) => {
+  const ingredients = await db
+    .select({
+      id: schema.ingredients.id,
+      name: schema.ingredients.name,
+      quantity: schema.recipeIngredients.quantity,
+      unit: schema.recipeIngredients.unit,
+    })
+    .from(schema.recipeIngredients)
+    .innerJoin(
+      schema.ingredients,
+      eq(schema.ingredients.id, schema.recipeIngredients.ingredientId),
+    )
+    .where(eq(schema.recipeIngredients.recipeId, recipeId));
+
+  return ingredients;
+};
+
 const insertRecipeWithIngredients = async (
   recipe: Recipe,
   ingredients?: Ingredient[],
@@ -154,6 +172,7 @@ export const api = {
     getByName: fetchRecipeByName,
     upsert: upsertRecipe,
     insert: insertRecipeWithIngredients,
+    getIngredients,
   },
   ingredients: {
     getAll: fetchAllIngredients,
