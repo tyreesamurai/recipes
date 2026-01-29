@@ -1,7 +1,14 @@
-export default function Home() {
+import { RecipeCard } from "@/components/recipe-card";
+import { api } from "@/lib/api";
+
+export default async function Home() {
+  const recipes = await api.recipes.getAll();
+
   return (
     <div>
-      <h1>This is the home section</h1>
+      {recipes.map((recipe) => {
+        return <RecipeCard key={recipe.id} recipe={recipe} />;
+      })}
     </div>
   );
 }
