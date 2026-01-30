@@ -19,7 +19,7 @@ const fetchRecipeByID = async (id: number) => {
     .where(eq(schema.recipes.id, id))
     .limit(1);
 
-  logger.info("fetched recipe: %s", JSON.stringify(row));
+  logger.info("fetched recipe: %s", JSON.stringify(row.name));
 
   return row as Recipe;
 };
@@ -31,7 +31,7 @@ const fetchRecipeByName = async (name: string) => {
     .where(eq(schema.recipes.name, name))
     .limit(1);
 
-  logger.info("fetched recipe: %s", JSON.stringify(row));
+  logger.info("fetched recipe: %s", JSON.stringify(row.name));
 
   return row as Recipe;
 };
@@ -46,7 +46,7 @@ const upsertRecipe = async (recipe: Recipe) => {
       .where(eq(schema.recipes.name, recipe.name))
       .returning();
 
-    logger.info("found existing recipe: %s", JSON.stringify(row));
+    logger.info("found existing recipe: %s", JSON.stringify(row.name));
     return row as Recipe;
   }
 
@@ -55,7 +55,7 @@ const upsertRecipe = async (recipe: Recipe) => {
     .values(recipe)
     .returning();
 
-  logger.info("created new recipe: %s", JSON.stringify(insertedRecipe));
+  logger.info("created new recipe: %s", JSON.stringify(insertedRecipe.name));
   return insertedRecipe as Recipe;
 };
 
@@ -135,7 +135,7 @@ const insertRecipeWithIngredients = async (
   if (!ingredients) {
     logger.info(
       "inserted recipe with no ingredients: %s",
-      JSON.stringify(insertedRecipe),
+      JSON.stringify(insertedRecipe.name),
     );
     return insertedRecipe;
   }
@@ -153,7 +153,7 @@ const insertRecipeWithIngredients = async (
     await api.recipeIngredients.insert(recipeIngredient);
   });
 
-  logger.info("recipe inserted: %s", JSON.stringify(insertedRecipe));
+  logger.info("recipe inserted: %s", JSON.stringify(insertedRecipe.name));
 };
 
 const insertRecipeIngredient = async (recipeIngredient: RecipeIngredient) => {

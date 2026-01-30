@@ -16,7 +16,7 @@ export default async function RecipePage({
     : await api.recipes.getByName(slug.replaceAll("-", " "));
 
   if (!recipe.id) {
-    logger.info("no recipe id for %s", recipe.name);
+    logger.error("no recipe id for %s", recipe.name);
     return;
   }
 
@@ -30,12 +30,11 @@ export default async function RecipePage({
         return <h5 key={instruction}>{instruction}</h5>;
       })}
 
-      <h5>{recipe.instructions}</h5>
       {ingredients.map((ingredient) => {
         return (
           <h5
             key={ingredient.id}
-          >{`${ingredient.quantity} ${ingredient.unit} of ${ingredient.name}`}</h5>
+          >{`${ingredient.name}: ${ingredient.quantity} ${ingredient.unit}`}</h5>
         );
       })}
     </div>
