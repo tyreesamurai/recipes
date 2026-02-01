@@ -37,6 +37,9 @@ export default async function RecipePage({
           >{`${ingredient.name}: ${ingredient.quantity} ${ingredient.unit}`}</h5>
         );
       })}
+
+      <h4>Total Cooking Time: {recipe.cookingTimes?.total}</h4>
+      <h4>Nutrition: {recipe.nutrition?.calories}</h4>
     </div>
   );
 }
