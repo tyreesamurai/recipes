@@ -1,9 +1,5 @@
-import type { RecipeFilter } from "@/lib/types";
+import { FilterForm } from "@/components/forms/filter-form";
 
 export function RecipeFilterSection() {
-  return (
-    <div>
-      <h1>This is the filter section</h1>
-    </div>
-  );
+  return <FilterForm />;
 }
