@@ -1,3 +1,4 @@
+import type { SQL } from "drizzle-orm";
 import { and, eq, inArray, lte, sql } from "drizzle-orm";
 import { db } from "@/db/index";
 import * as schema from "@/db/schema";
@@ -176,7 +177,7 @@ const queryRecipes = async (filters: RecipeFilters) => {
   const totalTimeExpr = sql<number>`(${schema.recipes.cookingTimes}->>'total')::int`;
   const caloriesExpr = sql<number>`(${schema.recipes.nutrition}->>'calories')::int`;
 
-  const conditions: Array<ReturnType<typeof sql> | any> = [];
+  const conditions: SQL[] = [];
 
   if (normalizedName) {
     conditions.push(sql`${schema.recipes.name} ILIKE %${normalizedName}%`);
