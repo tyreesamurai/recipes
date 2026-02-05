@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { NavBar } from "@/components/navbar";
+import { NavBar } from "@/components/navbar/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/contexts/providers";
 import "./globals.css";

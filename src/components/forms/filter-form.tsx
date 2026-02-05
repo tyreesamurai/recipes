@@ -101,6 +101,9 @@ export function FilterForm() {
         </FieldGroup>
         <Button type="submit">Apply</Button>
       </form>
+      <Button type="submit" onClick={() => router.push("/")}>
+        Reset
+      </Button>
     </div>
   );
 }

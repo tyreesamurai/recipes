@@ -1,3 +1,4 @@
+import { CartButton } from "@/components/navbar/cart-button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -20,6 +21,9 @@ export function NavBar() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink href="/planner">Planner</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <CartButton />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
