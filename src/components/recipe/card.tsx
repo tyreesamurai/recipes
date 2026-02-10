@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { RecipeCheckbox } from "@/components/recipe/checkbox";
 import {
