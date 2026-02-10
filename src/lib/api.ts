@@ -42,6 +42,20 @@ const fetchRecipeByName = async (name: string) => {
   return row as Recipe;
 };
 
+const fetchRecipe = async (id: string | number) => {
+  if (typeof id === "string") {
+    const recipe = await fetchRecipeByName(id);
+    return recipe;
+  }
+
+  if (typeof id === "number") {
+    const recipe = await fetchRecipeByID(id);
+    return recipe;
+  }
+
+  return;
+};
+
 const upsertRecipe = async (recipe: Recipe) => {
   const foundRecipe = await api.recipes.getByName(recipe.name);
 
@@ -214,6 +228,7 @@ export const api = {
     getAll: fetchAllRecipes,
     getByID: fetchRecipeByID,
     getByName: fetchRecipeByName,
+    fetch: fetchRecipe,
     upsert: upsertRecipe,
     insert: insertRecipeWithIngredients,
     query: queryRecipes,

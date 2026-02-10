@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { errors } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
 export default async function RecipePage({
@@ -8,12 +9,11 @@ export default async function RecipePage({
 }) {
   const { slug } = await params;
 
-  const id = Number(slug);
-  const isId = !Number.isNaN(id);
+  const recipe = await api.recipes.fetch(slug.replaceAll("-", " "));
 
-  const recipe = isId
-    ? await api.recipes.getByID(id)
-    : await api.recipes.getByName(slug.replaceAll("-", " "));
+  if (!recipe) {
+    return;
+  }
 
   if (!recipe.id) {
     logger.error("no recipe id for %s", recipe.name);
