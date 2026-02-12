@@ -31,10 +31,12 @@ const fetchRecipeByID = async (id: number) => {
 };
 
 const fetchRecipeByName = async (name: string) => {
+  const cleanedName = name.replaceAll(/-/g, " ");
+
   const [row] = await db
     .select()
     .from(schema.recipes)
-    .where(eq(schema.recipes.name, name))
+    .where(eq(schema.recipes.name, cleanedName))
     .limit(1);
 
   logger.info("fetched recipe: %s", JSON.stringify(row.name));
@@ -43,17 +45,16 @@ const fetchRecipeByName = async (name: string) => {
 };
 
 const fetchRecipe = async (id: string | number) => {
-  if (typeof id === "string") {
-    const recipe = await fetchRecipeByName(id);
+  const asNumber = Number(id);
+  const isNumeric = Number.isFinite(asNumber);
+
+  if (!isNumeric) {
+    const recipe = await fetchRecipeByName(String(id));
     return recipe;
   }
 
-  if (typeof id === "number") {
-    const recipe = await fetchRecipeByID(id);
-    return recipe;
-  }
-
-  return;
+  const recipe = await fetchRecipeByID(asNumber);
+  return recipe;
 };
 
 const upsertRecipe = async (recipe: Recipe) => {
@@ -142,6 +143,26 @@ const getIngredients = async (recipeId: number) => {
     .where(eq(schema.recipeIngredients.recipeId, recipeId));
 
   return ingredients;
+};
+
+const getIngredientsForRecipes = async (recipeIds: number[]) => {
+  const uniqueIds = [...new Set(recipeIds)].filter((n) => Number.isFinite(n));
+
+  if (uniqueIds.length === 0) return [];
+
+  return db
+    .select({
+      id: schema.ingredients.id,
+      name: schema.ingredients.name,
+      quantity: schema.recipeIngredients.quantity,
+      unit: schema.recipeIngredients.unit,
+    })
+    .from(schema.recipeIngredients)
+    .innerJoin(
+      schema.ingredients,
+      eq(schema.ingredients.id, schema.recipeIngredients.ingredientId),
+    )
+    .where(inArray(schema.recipeIngredients.recipeId, uniqueIds));
 };
 
 const insertRecipeWithIngredients = async (
@@ -233,6 +254,7 @@ export const api = {
     insert: insertRecipeWithIngredients,
     query: queryRecipes,
     getIngredients,
+    getIngredientsForRecipes,
   },
   ingredients: {
     getAll: fetchAllIngredients,

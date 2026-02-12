@@ -23,30 +23,20 @@ export function useCart() {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<Recipe[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
+  const [items, setItems] = useState<Recipe[]>(() => {
+    if (typeof window === "undefined") return [];
     const itemsString = localStorage.getItem("cart");
-    if (!itemsString) {
-      setHydrated(true);
-      return;
-    }
-
+    if (!itemsString) return [];
     try {
-      const parsed = JSON.parse(itemsString);
-      setItems(parsed);
+      return JSON.parse(itemsString) as Recipe[];
     } catch {
-      throw errors.LOCAL_STORAGE_MALFORMED;
-    } finally {
-      setHydrated(true);
+      return [];
     }
-  }, []);
+  });
 
   useEffect(() => {
-    if (!hydrated) return;
     localStorage.setItem("cart", JSON.stringify(items));
-  }, [hydrated, items]);
+  }, [items]);
 
   const add = (recipe: Recipe) => {
     setItems((prev) => [...prev, recipe]);
