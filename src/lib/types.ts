@@ -4,14 +4,28 @@ import { ingredients, recipeIngredients, recipes } from "@/db/schema";
 
 const nutritionSchema = z
   .object({
-    calories: z.number(),
-    protein: z.number().optional(),
-    fats: z.number().optional(),
-    carbs: z.number().optional(),
+    calories: z.number().nonnegative(),
+    protein: z.number().nonnegative().optional(),
+    fats: z.number().nonnegative().optional(),
+    carbs: z.number().nonnegative().optional(),
   })
   .nullish();
 
-export const recipeSchema = createSelectSchema(recipes).partial({ id: true });
+const cookingTimeSchema = z
+  .object({
+    total: z.number().nonnegative(),
+    prep: z.number().nonnegative().optional(),
+    cook: z.number().nonnegative().optional(),
+    additional: z.number().nonnegative().optional(),
+    rest: z.number().nonnegative().optional(),
+    cool: z.number().nonnegative().optional(),
+  })
+  .nullish();
+
+export const recipeSchema = createSelectSchema(recipes)
+  .extend({ nutrition: nutritionSchema, cookingTimes: cookingTimeSchema })
+  .partial()
+  .required({ name: true });
 export const ingredientSchema = createSelectSchema(ingredients)
   .partial({
     id: true,
