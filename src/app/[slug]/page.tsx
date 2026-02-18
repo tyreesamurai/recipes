@@ -9,7 +9,7 @@ export default async function RecipePage({
 }) {
   const { slug } = await params;
 
-  const recipe = await api.recipes.fetch(slug.replaceAll("-", " "));
+  const recipe = await api.recipes.get(slug.replaceAll("-", " "));
 
   if (!recipe) {
     return;

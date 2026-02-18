@@ -83,21 +83,18 @@ export function CreateRecipeForm(props: {
   });
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    // 1) Normalize arrays
     const instructions = (data.instructions ?? [])
       .map((i) => i.text.trim())
       .filter(Boolean);
 
     const ingredients = (data.ingredients ?? [])
       .map((i) => ({
-        ...i,
         name: i.name.trim(),
-        unit: (i.unit ?? "").trim(),
-        quantity: i.quantity ?? 0,
+        ...(i.quantity && { quantity: i.quantity }),
+        ...(i.unit?.trim() && { unit: i.unit.trim() }),
       }))
       .filter((i) => i.name.length > 0);
 
-    // 2) Build payload without deletes
     const recipePayload = {
       name: data.name.trim(),
 
@@ -191,7 +188,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="nutrition.calories">Calories</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -205,7 +206,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="nutrition.protein">Protein</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -219,7 +224,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="nutrition.fats">Fats</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -233,7 +242,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="nutrition.carbs">Carbs</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -249,7 +262,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="cookingTimes.prep">Prep Time</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -263,7 +280,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="cookingTimes.cook">Cook Time</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -277,7 +298,11 @@ export function CreateRecipeForm(props: {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="cookingTimes.total">Total Time</FieldLabel>
-                <Input {...field} type="number" />
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -312,7 +337,11 @@ export function CreateRecipeForm(props: {
                   <FieldLabel htmlFor={`ingredients.${index}.quantity`}>
                     Quantity
                   </FieldLabel>
-                  <Input {...field} type="number" />
+                  <Input
+                    {...field}
+                    type="number"
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

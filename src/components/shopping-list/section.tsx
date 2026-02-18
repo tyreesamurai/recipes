@@ -34,8 +34,6 @@ export function ShoppingListSection() {
 
       const json = await response.json();
 
-      console.log(json);
-
       const ingredients = z.array(ingredientSchema).parse(json.ingredients);
 
       return ingredients;
@@ -47,6 +45,10 @@ export function ShoppingListSection() {
   }, [ids]);
 
   return ingredients.map((ingredient) => {
-    return <h1 key={ingredient.id}>{ingredient.name}</h1>;
+    return (
+      <h1 key={ingredient.id}>
+        {ingredient.name} {ingredient.quantity} {ingredient.unit}
+      </h1>
+    );
   });
 }
