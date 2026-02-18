@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/lib/api";
 import { type Ingredient, type Recipe, recipeSchema } from "@/lib/types";
 
 const formSchema = recipeSchema.extend({
@@ -95,7 +96,7 @@ export function CreateRecipeForm(props: {
       }))
       .filter((i) => i.name.length > 0);
 
-    const recipePayload = {
+    const recipePayload: Recipe = {
       name: data.name.trim(),
 
       ...(data.description?.trim() && { description: data.description.trim() }),
@@ -113,7 +114,11 @@ export function CreateRecipeForm(props: {
       ...(ingredients.length > 0 && { ingredients }),
     };
 
-    toast(JSON.stringify(payload, null, 2));
+    fetch("/api/recipes/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then((response) => toast(JSON.stringify(response)));
   }
 
   return (

@@ -33,8 +33,8 @@ export const fetchRecipeByID = async (id: number) => {
     operation: "select",
     ok: true,
     identifier: {
-      id: row.id,
-      name: row.name,
+      ...(row.id && { id: row.id }),
+      ...(row.name && { name: row.name }),
     },
   };
 
@@ -57,8 +57,8 @@ export const fetchRecipeByName = async (name: string) => {
     operation: "select",
     ok: true,
     identifier: {
-      id: row.id,
-      name: row.name,
+      ...(row.id && { id: row.id }),
+      ...(row.name && { name: row.name }),
     },
   };
 
@@ -109,8 +109,8 @@ export const fetchIngredientByID = async (id: number) => {
     operation: "select",
     ok: true,
     identifier: {
-      id: row.id,
-      name: row.name,
+      ...(row.id && { id: row.id }),
+      ...(row.name && { name: row.name }),
     },
   };
 
@@ -131,8 +131,8 @@ export const fetchIngredientByName = async (name: string) => {
     operation: "select",
     ok: true,
     identifier: {
-      id: row.id,
-      name: row.name,
+      ...(row.id && { id: row.id }),
+      ...(row.name && { name: row.name }),
     },
   };
 

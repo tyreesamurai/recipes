@@ -10,49 +10,41 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const recipes = pgTable(
-  "recipes",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: varchar({ length: 255 }).notNull().unique(),
-    description: text(),
-    instructions: text().array(),
-    nutrition: jsonb().$type<{
-      calories: number;
-      protein?: number;
-      fats?: number;
-      carbs?: number;
-    }>(),
-    cookingTimes: jsonb().$type<{
-      cook?: number;
-      prep?: number;
-      rest?: number;
-      additional?: number;
-      cool?: number;
-      total: number;
-    }>(),
-    imageUrl: varchar("image_url", { length: 255 }),
-    inputUrl: varchar("input_url", { length: 255 }),
-  },
-  (table) => [uniqueIndex("name").on(sql`lower(${table.name})`)],
-);
+export const recipes = pgTable("recipes", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull().unique(),
+  description: text(),
+  instructions: text().array(),
+  nutrition: jsonb().$type<{
+    calories: number;
+    protein?: number;
+    fats?: number;
+    carbs?: number;
+  }>(),
+  cookingTimes: jsonb().$type<{
+    cook?: number;
+    prep?: number;
+    rest?: number;
+    additional?: number;
+    cool?: number;
+    total: number;
+  }>(),
+  imageUrl: varchar("image_url", { length: 255 }),
+  inputUrl: varchar("input_url", { length: 255 }),
+});
 
-export const ingredients = pgTable(
-  "ingredients",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: varchar({ length: 255 }).notNull(),
-    description: text(),
-    nutrition: jsonb().$type<{
-      calories: number;
-      protein?: number;
-      fats?: number;
-      carbs?: number;
-    }>(),
-    imageUrl: varchar("image_url", { length: 255 }),
-  },
-  (table) => [uniqueIndex("name").on(sql`lower(${table.name})`)],
-);
+export const ingredients = pgTable("ingredients", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull().unique(),
+  description: text(),
+  nutrition: jsonb().$type<{
+    calories: number;
+    protein?: number;
+    fats?: number;
+    carbs?: number;
+  }>(),
+  imageUrl: varchar("image_url", { length: 255 }),
+});
 
 export const recipeIngredients = pgTable(
   "recipe_ingredients",
@@ -67,7 +59,7 @@ export const recipeIngredients = pgTable(
 
 export const tags = pgTable("tags", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }).notNull().unique(),
 });
 
 export const recipeTags = pgTable(

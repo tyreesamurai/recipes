@@ -128,6 +128,8 @@ export const upsertRecipe = async (item: RecipeWithIngredients) => {
       results.push(recipeIngredientResult);
     }
   });
+
+  return results[0];
 };
 
 export const upsertIngredient = async (ingredient: Ingredient) => {

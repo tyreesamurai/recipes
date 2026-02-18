@@ -35,8 +35,8 @@ export const ingredientSchema = createSelectSchema(ingredients)
     description: z.string().nullish(),
     imageUrl: z.string().nullish(),
     nutrition: nutritionSchema,
-    quantity: z.coerce.number().min(0),
-    unit: z.string(),
+    quantity: z.coerce.number().min(0).optional(),
+    unit: z.string().optional(),
   });
 export const recipeIngredientSchema = createSelectSchema(recipeIngredients);
 

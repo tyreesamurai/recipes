@@ -6,14 +6,14 @@ Additionally a space where meals for the week can be planned & shopping lists ca
 
 ## TODOs
 
-- [ ] Set up tag schema & include recipe & ingredient join tables
+- [x] Set up tag schema & include recipe & ingredient join tables
 - [ ] Seed Database with at least 5 recipes & all relevant ingredients / tags etc.
-- [ ] Develop home page that shows where the recipes can be viewed.
+- [x] Develop home page that shows where the recipes can be viewed.
   - [ ] Add filter section that will filter the shown recipes based on name, tags, ingredients, nutrition, cooking time & other relevant categories
-  - [ ] Add a select option that will keep & remember selected recipes
-- [ ] Develop implementation for creating recipes in the UI
-  - [ ] Create Recipe Form
+  - [x] Add a select option that will keep & remember selected recipes
+- [x] Develop implementation for creating recipes in the UI
+  - [x] Create Recipe Form
   - [ ] Import from selected websites
-  - [ ] Ensure recipe & ingredients are actually placed in the database
-- [ ] Figure out shopping list feature
+  - [x] Ensure recipe & ingredients are actually placed in the database
+- [x] Figure out shopping list feature
 - [ ] Figure out planning feature
