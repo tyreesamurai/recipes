@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   integer,
   jsonb,
@@ -6,7 +5,6 @@ import {
   primaryKey,
   real,
   text,
-  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 

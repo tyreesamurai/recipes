@@ -8,7 +8,7 @@ export async function GET(
 
   return Response.json(
     {
-      data: await api.recipes.fetch(slug),
+      data: await api.recipes.get(slug),
     },
     { status: 200 },
   );

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { RecipeCardSection } from "@/components/recipe/card-section";
 import { RecipeFilterSection } from "@/components/recipe/filter-section";
 
@@ -8,8 +9,10 @@ export default async function Home({
 }) {
   return (
     <div className="flex">
-      <RecipeFilterSection />
-      <RecipeCardSection searchParams={searchParams} />
+      <Suspense fallback={<h1>this is the fallback</h1>}>
+        <RecipeFilterSection />
+        <RecipeCardSection searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

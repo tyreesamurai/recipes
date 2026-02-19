@@ -10,7 +10,7 @@ const nutritionSchema = z
     fats: z.number().nonnegative().optional(),
     carbs: z.number().nonnegative().optional(),
   })
-  .nullish();
+  .optional();
 
 const cookingTimeSchema = z
   .object({
@@ -21,23 +21,21 @@ const cookingTimeSchema = z
     rest: z.number().nonnegative().optional(),
     cool: z.number().nonnegative().optional(),
   })
-  .nullish();
+  .optional();
 
 export const recipeSchema = createSelectSchema(recipes)
   .extend({ nutrition: nutritionSchema, cookingTimes: cookingTimeSchema })
   .partial()
   .required({ name: true });
 export const ingredientSchema = createSelectSchema(ingredients)
-  .partial({
-    id: true,
-  })
   .extend({
-    description: z.string().nullish(),
-    imageUrl: z.string().nullish(),
     nutrition: nutritionSchema,
-    quantity: z.coerce.number().min(0).optional(),
-    unit: z.string().optional(),
-  });
+    quantity: z.number().nonnegative(),
+    unit: z.string(),
+  })
+  .partial()
+  .required({ name: true });
+
 export const recipeIngredientSchema = createSelectSchema(recipeIngredients);
 
 export const resultSchema = {

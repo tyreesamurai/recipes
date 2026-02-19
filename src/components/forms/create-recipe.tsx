@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { api } from "@/lib/api";
 import { type Ingredient, type Recipe, recipeSchema } from "@/lib/types";
 
 const formSchema = recipeSchema.extend({

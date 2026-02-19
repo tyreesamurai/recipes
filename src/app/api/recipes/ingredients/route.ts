@@ -1,5 +1,4 @@
 import { api } from "@/lib/api";
-import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const { ids } = await request.json();
