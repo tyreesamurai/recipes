@@ -1,0 +1,42 @@
+name: reusable ci
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  quality:
+    name: Lint / TypeCheck / Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun ci
+
+      - name: Biome (format/lint)
+        run: bunx biome check .
+
+      - name: Lint
+        run: bun run lint
+
+      - name: TypeCheck
+        run: bun run typecheck
+
+      - name: Tests
+        run: bun test
+
+  ci:
+    uses: tyreesamurai/ci-cd/.github/workflows/build-and-push.yml@main
+    needs: quality
+  cd:
+    uses: tyreesamurai/ci-cd/.github/workflows/deploy.yml@main
+    with:
+      service_path: "/srv/services/recipes"
