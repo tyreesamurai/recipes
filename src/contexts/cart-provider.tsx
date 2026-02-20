@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { errors } from "@/lib/errors";
+// import { errors } from "@/lib/errors";
 import type { Recipe } from "@/lib/types";
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
@@ -16,7 +16,7 @@ type CartContextValue = {
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
-    throw errors.CONTEXT_NOT_FOUND;
+    // throw errors.CONTEXT_NOT_FOUND;
   }
 
   return context;
