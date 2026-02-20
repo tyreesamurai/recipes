@@ -1,7 +1,9 @@
-name: reusable ci
+name: test & build
 on:
   push:
-    branches: ["main"]
+    branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
 
 permissions:
   contents: read
@@ -36,7 +38,3 @@ jobs:
   ci:
     uses: tyreesamurai/ci-cd/.github/workflows/build-and-push.yml@main
     needs: quality
-  cd:
-    uses: tyreesamurai/ci-cd/.github/workflows/deploy.yml@main
-    with:
-      service_path: "/srv/services/recipes"
