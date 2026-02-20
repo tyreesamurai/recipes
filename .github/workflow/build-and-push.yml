@@ -1,0 +1,12 @@
+name: reusable ci
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  ci:
+    uses: tyreesamurai/ci-cd/.github/workflows/build-and-push.yml
+  cd:
+    uses: tyreesamurai/ci-cd/.github/workflows/deploy.yml
+    with:
+      service_path: "/srv/services/recipes"
